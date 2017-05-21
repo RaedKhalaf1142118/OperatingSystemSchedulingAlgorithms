@@ -49,11 +49,13 @@ public class Priority extends SchedulingAlgorithms {
 				executeSJF();
 				sumATT += this.tempATT;
 				sumAWT += this.tempAWT;
-				this.resultSet.addData("ATT" + times, sumATT / times);
-				this.resultSet.addData("AWT" + times, sumAWT / times);
 				initialize();
 			}
+			this.resultSet.addData("ATT" + times, sumATT / times);
+			this.resultSet.addData("AWT" + times, sumAWT / times);
 			times *= 10;
+			sumAWT = sumATT = 0;
+
 		}
 		return resultSet;
 	}
@@ -61,7 +63,6 @@ public class Priority extends SchedulingAlgorithms {
 	public void executeSJF() {
 		int currentTime = 0;
 		while (!this.arrivalTimeHeap.isEmpty() || !this.proioritysHeap.isEmpty()) {
-
 			if (this.proioritysHeap.isEmpty()) {
 				proioritysHeap.add(this.arrivalTimeHeap.poll());
 			}

@@ -52,11 +52,12 @@ public class RoundRobin extends SchedulingAlgorithms {
 				executeRR();
 				sumATT += this.tempATT;
 				sumAWT += this.tempAWT;
-				this.resultSet.addData("ATT" + times, sumATT / times);
-				this.resultSet.addData("AWT" + times, sumAWT / times);
 				initialize();
 			}
+			this.resultSet.addData("ATT" + times, sumATT / times);
+			this.resultSet.addData("AWT" + times, sumAWT / times);
 			times *= 10;
+			sumAWT = sumATT = 0;
 		}
 		return resultSet;
 	}

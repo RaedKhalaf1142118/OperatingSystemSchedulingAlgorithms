@@ -231,12 +231,11 @@ public class Content extends BorderPane {
 		ResultSet[] tempSets = { this.fcfsResultSet, this.sjfResultSet, this.priorityResultSet, this.rrResultSet,
 				this.mlfbqResultSet };
 
-		for (int i = 1; i < 5; i++) {
+		for (int i = 1; i < 6; i++) {
 			ResultSet tempSet = tempSets[i - 1];
 			int key = 100;
-			for (int j = 1; j < 6; j++) {
-				System.out.println(type + " " + key);
-				root.add(createNormalCell(tempSet.getData(type + key) + ""), i, j);
+			for (int j = 1; j < 5; j++) {
+				root.add(createNormalCell(tempSet.getData(type + key) + ""), j, i);
 				key *= 10;
 			}
 		}
