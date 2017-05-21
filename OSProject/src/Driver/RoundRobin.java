@@ -66,7 +66,7 @@ public class RoundRobin extends SchedulingAlgorithms {
 		int currentTime = processList.get(0).getArrivalTime();
 		int i = 0;
 		boolean queueIsEmpty = true;
-		
+
 		while (!processList.isEmpty()) {
 			if (processList.get(i).getArrivalTime() <= currentTime) {
 				if (processList.get(i).getReminderCpuBurst() <= Q) {
@@ -86,14 +86,14 @@ public class RoundRobin extends SchedulingAlgorithms {
 				i++;
 				queueIsEmpty = false;
 			} else {
-				if(queueIsEmpty){
+				if (queueIsEmpty) {
 					currentTime = getMinArrivalTime(processList);
 				}
 				i = 0;
 				queueIsEmpty = true;
 			}
-			if(i == processList.size())
-				i=0;
+			if (i == processList.size())
+				i = 0;
 		}
 		this.tempAWT = getAWT(this.processes);
 		this.tempATT = getATT(this.processes);
@@ -102,7 +102,7 @@ public class RoundRobin extends SchedulingAlgorithms {
 	private int getMinArrivalTime(LinkedList<Process> processList2) {
 		int min = Integer.MAX_VALUE;
 		for (int i = 0; i < processList2.size(); i++) {
-			if(processList2.get(i).getArrivalTime() < min){
+			if (processList2.get(i).getArrivalTime() < min) {
 				min = processList2.get(i).getArrivalTime();
 			}
 		}

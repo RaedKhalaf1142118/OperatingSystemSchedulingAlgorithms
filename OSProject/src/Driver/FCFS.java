@@ -66,4 +66,29 @@ public class FCFS extends SchedulingAlgorithms {
 		this.tempATT = getATT(this.processes);
 	}
 
+	public double[] executeFCFS(ArrayList<Process> processes) {
+		int currentTime = 0;
+		PriorityQueue<Process> priorityQueue = new PriorityQueue<>(new Comparator<Process>() {
+			@Override
+			public int compare(Process o1, Process o2) {
+				return o1.getArrivalTime() - o2.getArrivalTime();
+			}
+		});
+
+		priorityQueue.addAll(processes);
+
+		while (!priorityQueue.isEmpty()) {
+			Process tempProcess = priorityQueue.poll();
+			if (tempProcess.getArrivalTime() > currentTime) {
+				currentTime = tempProcess.getArrivalTime();
+			}
+			currentTime += tempProcess.getCpuBurst();
+			tempProcess.setFinishTime(currentTime);
+			tempProcess.setTurnArroundTime(tempProcess.getFinishTime() - tempProcess.getArrivalTime());
+			tempProcess.setWaitingTime(tempProcess.getTurnArroundTime() - tempProcess.getCpuBurst());
+		}
+
+		return new double[] { getAWT(processes), getATT(processes) };
+	}
+
 }

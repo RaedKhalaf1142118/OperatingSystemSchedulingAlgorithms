@@ -1,11 +1,15 @@
 package Driver;
 
+import java.util.ArrayList;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.FillTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -23,6 +27,7 @@ public class Content extends BorderPane {
 	private Stage window;
 	private ProcessFactory processFactory;
 	private ResultSet fcfsResultSet, rrResultSet, sjfResultSet, priorityResultSet, mlfbqResultSet;
+	private ArrayList<Process> inputProcesses;
 
 	public Content(Stage window) {
 		this.window = window;
@@ -32,6 +37,7 @@ public class Content extends BorderPane {
 		sjfResultSet = getSjfResultSet();
 		priorityResultSet = getPriorityResultSet();
 		mlfbqResultSet = getMultiLFBQResultSet();
+		this.inputProcesses = new ArrayList<>();
 		craeteBackground();
 		createContent();
 	}
@@ -95,10 +101,72 @@ public class Content extends BorderPane {
 		StackPane rr = createAlgorithmTab(4, "RR");
 		StackPane mlfq = createAlgorithmTab(5, "Multi-LFBQ");
 
+		fcfs.setOnMouseClicked(e -> {
+			viewInputForm("FCFS", 0);
+		});
+
+		sjf.setOnMouseClicked(e -> {
+		});
+
+		priority.setOnMouseClicked(e -> {
+			viewInputForm("priority", 0);
+		});
+
+		rr.setOnMouseClicked(e -> {
+		});
+
+		mlfq.setOnMouseClicked(e -> {
+		});
 		list.getChildren().addAll(fcfs, sjf, priority, rr, mlfq);
 		list.setAlignment(Pos.CENTER);
 		root.setCenter(list);
 		return root;
+	}
+
+	private void viewInputForm(String type, int processNumber) {
+		GridPane root = new GridPane();
+
+		TextField priority = createFormControl("Priority", root, 0);
+		TextField arrivalTime = createFormControl("Arrival Time", root, 1);
+		TextField cpuBurst = createFormControl("CPU Burst", root, 2);
+
+		Button add = new Button("Add");
+		Button close = new Button("close");
+		close.setOnAction(e -> {
+			this.window.close();
+		});
+		add.setOnMouseClicked(e -> {
+			if (processNumber < 8) {
+				this.inputProcesses.add(new Process("P" + (processNumber + 1), Integer.parseInt(priority.getText()),
+						Integer.parseInt(arrivalTime.getText()), Integer.parseInt(cpuBurst.getText())));
+				viewInputForm(type, processNumber + 1);
+			} else {
+				solveAndViewAlgorithm(type);
+			}
+		});
+		root.setHgap(30);
+		root.setVgap(10);
+		root.setAlignment(Pos.CENTER);
+		setCenter(root);
+	}
+
+	private void solveAndViewAlgorithm(String type) {
+		switch (type) {
+		case "FCFS":	
+			
+			break;
+		case "priority":
+			break;
+		}
+	}
+
+	private TextField createFormControl(String title, GridPane gridPane, int i) {
+		TextField textField = new TextField();
+		Label label = new Label(title);
+		textField.setPromptText(title);
+		gridPane.add(label, 0, i);
+		gridPane.add(textField, 1, i);
+		return textField;
 	}
 
 	private StackPane createAlgorithmTab(int number, String title) {
@@ -143,14 +211,12 @@ public class Content extends BorderPane {
 	}
 
 	private void promptUser() {
-		StackPane random = createSelection("Random");
-		StackPane input = createSelection("Input");
-		HBox hbox = new HBox(100, random, input);
+		StackPane random = createSelection("Generate Random");
+		HBox hbox = new HBox(100, random);
 		hbox.setAlignment(Pos.CENTER);
 
 		random.setOnMouseClicked(e -> {
 			random.setOnMouseClicked(null);
-			input.setOnMouseClicked(null);
 			BorderPane randomPane = viewRandom();
 			randomPane.setOpacity(0);
 			FadeTransition ft = new FadeTransition(Duration.seconds(1), this.getCenter());
@@ -165,32 +231,13 @@ public class Content extends BorderPane {
 				ft2.play();
 			});
 		});
-
-		input.setOnMouseClicked(e -> {
-			random.setOnMouseClicked(null);
-			input.setOnMouseClicked(null);
-			BorderPane inputPane = viewInput();
-			inputPane.setOpacity(0);
-			FadeTransition ft = new FadeTransition(Duration.seconds(1), this.getCenter());
-			ft.setFromValue(1);
-			ft.setToValue(0);
-			ft.play();
-			ft.setOnFinished(e1 -> {
-				setCenter(inputPane);
-				FadeTransition ft2 = new FadeTransition(Duration.seconds(1), this.getCenter());
-				ft2.setFromValue(0);
-				ft2.setToValue(1);
-				ft2.play();
-			});
-		});
-
 		setCenter(hbox);
 	}
 
 	private StackPane createSelection(String title) {
 		StackPane pane = new StackPane();
 		Label titleLabel = new Label(title);
-		titleLabel.setFont(Font.font("Comic Sans MS", 45));
+		titleLabel.setFont(Font.font("Comic Sans MS", 22));
 		Rectangle rect = new Rectangle(200, 200, Color.LIGHTGREEN);
 		rect.setStroke(null);
 		pane.getChildren().addAll(rect, titleLabel);
@@ -268,6 +315,13 @@ public class Content extends BorderPane {
 		Label label = new Label(data);
 		stackPane.getChildren().addAll(rect, label);
 		stackPane.setAlignment(Pos.CENTER);
+		stackPane.setOnMouseEntered(e ->{
+			rect.setFill(Color.GHOSTWHITE);
+		});
+		
+		stackPane.setOnMouseExited(e ->{
+			rect.setFill(Color.INDIANRED);
+		});
 		return stackPane;
 	}
 
@@ -278,6 +332,13 @@ public class Content extends BorderPane {
 		Label label = new Label(data);
 		pane.getChildren().addAll(rect, label);
 		pane.setAlignment(Pos.CENTER);
+		pane.setOnMouseEntered(e ->{
+			rect.setFill(Color.GHOSTWHITE);
+		});
+		
+		pane.setOnMouseExited(e ->{
+			rect.setFill(Color.LIGHTGREEN);
+		});
 		return pane;
 	}
 

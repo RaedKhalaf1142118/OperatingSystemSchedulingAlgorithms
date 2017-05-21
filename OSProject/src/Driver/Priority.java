@@ -20,7 +20,7 @@ public class Priority extends SchedulingAlgorithms {
 		this.proioritysHeap = new PriorityQueue<>(new Comparator<Process>() {
 			@Override
 			public int compare(Process o1, Process o2) {
-				return (o2.getPriority()-Integer.MAX_VALUE) - (o1.getPriority()-Integer.MAX_VALUE);
+				return (o2.getPriority() - Integer.MAX_VALUE) - (o1.getPriority() - Integer.MAX_VALUE);
 			}
 		});
 		this.arrivalTimeHeap = new PriorityQueue<>(new Comparator<Process>() {
@@ -60,8 +60,9 @@ public class Priority extends SchedulingAlgorithms {
 		return resultSet;
 	}
 
-	public void executeSJF() {
+	private void executeSJF() {
 		int currentTime = 0;
+
 		while (!this.arrivalTimeHeap.isEmpty() || !this.proioritysHeap.isEmpty()) {
 			if (this.proioritysHeap.isEmpty()) {
 				proioritysHeap.add(this.arrivalTimeHeap.poll());

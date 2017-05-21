@@ -13,19 +13,20 @@ public class MultiLevelQueue extends SchedulingAlgorithms {
 	private PriorityQueue<Process> level1;
 	private PriorityQueue<Process> level2;
 	private PriorityQueue<Process> level3;
-	private final int Q1 = 17;
-	private final int Q2 = 25;
+	private final int Q1 = 40;
+	private final int Q2 = 400;
 	private int currentTime = 0;
 
 	public MultiLevelQueue(ProcessFactory processFactory) {
 		this.processFactory = processFactory;
 		this.resultSet = new ResultSet();
+		
 		Comparator<Process> comparator = new Comparator<Process>() {
 			@Override
 			public int compare(Process o1, Process o2) {
 				return o1.getArrivalTime() - o2.getArrivalTime();
 			}
-		};
+		};  
 		level1 = new PriorityQueue<>(comparator);
 		level2 = new PriorityQueue<>(comparator);
 		level3 = new PriorityQueue<>(comparator);
@@ -52,8 +53,8 @@ public class MultiLevelQueue extends SchedulingAlgorithms {
 				sumAWT += this.tempAWT;
 				initialize();
 			}
-			this.resultSet.addData("ATT" + times, sumATT / times);
-			this.resultSet.addData("AWT" + times, sumAWT / times);
+			this.resultSet.addData("ATT" + times, (sumATT/ times));
+			this.resultSet.addData("AWT" + times, (sumAWT/ times));
 			times *= 10;
 			sumAWT = sumATT = 0;
 		}
@@ -61,6 +62,7 @@ public class MultiLevelQueue extends SchedulingAlgorithms {
 	}
 
 	private void executeTLFQ() {
+		
 		executeFirstQueue();
 		executeSecondQueue();
 		executeThriedQueue();
@@ -92,7 +94,7 @@ public class MultiLevelQueue extends SchedulingAlgorithms {
 			Process tempProcess = this.level2.poll();
 			if (tempProcess.getReminderCpuBurst() <= this.Q2) {
 				currentTime += tempProcess.getReminderCpuBurst();
-				tempProcess.setCpuBurst(0);
+				tempProcess.setReminderCpuBurst(0);
 				tempProcess.setFinishTime(currentTime);
 				tempProcess.setTurnArroundTime(tempProcess.getFinishTime() - tempProcess.getArrivalTime());
 				tempProcess.setWaitingTime(tempProcess.getTurnArroundTime() - tempProcess.getCpuBurst());
@@ -107,7 +109,7 @@ public class MultiLevelQueue extends SchedulingAlgorithms {
 	private void executeThriedQueue() {
 		while (!this.level3.isEmpty()) {
 			Process tempProcess = this.level3.poll();
-			currentTime += tempProcess.getCpuBurst();
+			currentTime += tempProcess.getReminderCpuBurst();
 			tempProcess.setFinishTime(currentTime);
 			tempProcess.setTurnArroundTime(tempProcess.getFinishTime() - tempProcess.getArrivalTime());
 			tempProcess.setWaitingTime(tempProcess.getTurnArroundTime() - tempProcess.getCpuBurst());
