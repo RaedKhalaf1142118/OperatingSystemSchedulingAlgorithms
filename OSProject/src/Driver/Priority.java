@@ -13,7 +13,8 @@ public class Priority extends SchedulingAlgorithms {
 	private PriorityQueue<Process> proioritysHeap;
 	private double tempAWT;
 	private double tempATT;
-
+	private ArrayList<ResultPair> results = new ArrayList<>();
+	
 	public Priority(ProcessFactory processFactory) {
 		this.processFactory = processFactory;
 		this.resultSet = new ResultSet();
@@ -32,6 +33,10 @@ public class Priority extends SchedulingAlgorithms {
 
 		initialize();
 	}
+	
+	public ArrayList<ResultPair> getResults() {
+		return results;
+	}
 
 	private void initialize() {
 		this.processes = this.processFactory.getRandomProcesses();
@@ -49,6 +54,7 @@ public class Priority extends SchedulingAlgorithms {
 				executeSJF();
 				sumATT += this.tempATT;
 				sumAWT += this.tempAWT;
+				this.results.add(new ResultPair(this.tempATT, this.tempAWT, times));
 				initialize();
 			}
 			this.resultSet.addData("ATT" + times, sumATT / times);

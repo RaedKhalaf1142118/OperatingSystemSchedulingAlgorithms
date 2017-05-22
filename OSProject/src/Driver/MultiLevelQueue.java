@@ -16,17 +16,22 @@ public class MultiLevelQueue extends SchedulingAlgorithms {
 	private final int Q1 = 40;
 	private final int Q2 = 400;
 	private int currentTime = 0;
+	private ArrayList<ResultPair> results = new ArrayList<>();
 
+	public ArrayList<ResultPair> getResults() {
+		return results;
+	}
+	
 	public MultiLevelQueue(ProcessFactory processFactory) {
 		this.processFactory = processFactory;
 		this.resultSet = new ResultSet();
-		
+
 		Comparator<Process> comparator = new Comparator<Process>() {
 			@Override
 			public int compare(Process o1, Process o2) {
 				return o1.getArrivalTime() - o2.getArrivalTime();
 			}
-		};  
+		};
 		level1 = new PriorityQueue<>(comparator);
 		level2 = new PriorityQueue<>(comparator);
 		level3 = new PriorityQueue<>(comparator);
@@ -51,10 +56,11 @@ public class MultiLevelQueue extends SchedulingAlgorithms {
 				executeTLFQ();
 				sumATT += this.tempATT;
 				sumAWT += this.tempAWT;
+				this.results.add(new ResultPair(this.tempATT, this.tempAWT, times));
 				initialize();
 			}
-			this.resultSet.addData("ATT" + times, (sumATT/ times));
-			this.resultSet.addData("AWT" + times, (sumAWT/ times));
+			this.resultSet.addData("ATT" + times, (sumATT / times));
+			this.resultSet.addData("AWT" + times, (sumAWT / times));
 			times *= 10;
 			sumAWT = sumATT = 0;
 		}
@@ -62,7 +68,6 @@ public class MultiLevelQueue extends SchedulingAlgorithms {
 	}
 
 	private void executeTLFQ() {
-		
 		executeFirstQueue();
 		executeSecondQueue();
 		executeThriedQueue();

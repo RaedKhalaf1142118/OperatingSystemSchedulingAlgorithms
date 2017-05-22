@@ -11,6 +11,7 @@ public class FCFS extends SchedulingAlgorithms {
 	private PriorityQueue<Process> priorityQueue;
 	private double tempAWT;
 	private double tempATT;
+	private ArrayList<ResultPair> results = new ArrayList<>();
 
 	public FCFS(ProcessFactory processFactory) {
 		this.processFactory = processFactory;
@@ -25,6 +26,10 @@ public class FCFS extends SchedulingAlgorithms {
 		initialize();
 	}
 
+	public ArrayList<ResultPair> getResults() {
+		return results;
+	}
+	
 	public ResultSet getResultSet() {
 		int times = 100;
 		double sumAWT = 0;
@@ -34,6 +39,7 @@ public class FCFS extends SchedulingAlgorithms {
 				executeFCFS();
 				sumATT += this.tempATT;
 				sumAWT += this.tempAWT;
+				this.results.add(new ResultPair(this.tempATT, this.tempAWT, times));
 				initialize();
 			}
 			this.resultSet.addData("ATT" + times, sumATT / times);

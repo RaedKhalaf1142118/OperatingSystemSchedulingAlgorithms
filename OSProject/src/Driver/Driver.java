@@ -15,5 +15,6 @@ public class Driver extends Application {
 		Scene scene = new Scene(content, 1350, 600);
 		window.setScene(scene);
 		window.show();
+		window.setResizable(false);
 	}
 }

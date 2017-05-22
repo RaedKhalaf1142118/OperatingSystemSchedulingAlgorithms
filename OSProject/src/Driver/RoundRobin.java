@@ -14,7 +14,8 @@ public class RoundRobin extends SchedulingAlgorithms {
 	private double tempATT;
 	private final int Q = 4;
 	private LinkedList<Process> processList;
-
+	private ArrayList<ResultPair> results = new ArrayList<>();
+	
 	public RoundRobin(ProcessFactory processFactory) {
 		this.processFactory = processFactory;
 		this.resultSet = new ResultSet();
@@ -28,6 +29,10 @@ public class RoundRobin extends SchedulingAlgorithms {
 		});
 		this.processList = new LinkedList<>();
 		initialize();
+	}
+	
+	public ArrayList<ResultPair> getResults() {
+		return results;
 	}
 
 	private void initialize() {
@@ -52,6 +57,7 @@ public class RoundRobin extends SchedulingAlgorithms {
 				executeRR();
 				sumATT += this.tempATT;
 				sumAWT += this.tempAWT;
+				this.results.add(new ResultPair(this.tempATT, this.tempAWT, times));
 				initialize();
 			}
 			this.resultSet.addData("ATT" + times, sumATT / times);
